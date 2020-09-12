@@ -23,6 +23,14 @@ Begin VB.Form FormMain
    ScaleHeight     =   5040
    ScaleWidth      =   9030
    StartUpPosition =   2  '屏幕中心
+   Begin VB.ComboBox TextInput 
+      Height          =   375
+      Left            =   240
+      TabIndex        =   0
+      Text            =   "Crazy Urus 追求卓越软件"
+      Top             =   360
+      Width           =   7335
+   End
    Begin VB.CommandButton ButtonChange 
       Caption         =   "换一句"
       Default         =   -1  'True
@@ -59,7 +67,6 @@ Begin VB.Form FormMain
             Object.Width           =   9737
             Text            =   "制造本程序：Crazy Urus"
             TextSave        =   "制造本程序：Crazy Urus"
-            Key             =   ""
             Object.Tag             =   ""
             Object.ToolTipText     =   "Crazy Urus"
          EndProperty
@@ -68,7 +75,6 @@ Begin VB.Form FormMain
             MinWidth        =   2205
             Text            =   "No.2006001"
             TextSave        =   "No.2006001"
-            Key             =   ""
             Object.Tag             =   ""
             Object.ToolTipText     =   "2006年第一个程序"
          EndProperty
@@ -77,15 +83,13 @@ Begin VB.Form FormMain
             Object.Width           =   2734
             MinWidth        =   2734
             TextSave        =   "2020/9/13"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   5
             Object.Width           =   1147
             MinWidth        =   1147
-            TextSave        =   "0:31"
-            Key             =   ""
+            TextSave        =   "0:50"
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -451,23 +455,6 @@ Begin VB.Form FormMain
          Width           =   540
       End
    End
-   Begin VB.TextBox TextInput 
-      BeginProperty Font 
-         Name            =   "微软雅黑"
-         Size            =   9
-         Charset         =   134
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   375
-      Left            =   240
-      TabIndex        =   0
-      Text            =   "Crazy Urus 追求卓越软件"
-      Top             =   360
-      Width           =   7335
-   End
    Begin VB.Label Label3 
       Caption         =   "请输入要显示的汉字："
       BeginProperty Font 
@@ -603,9 +590,14 @@ Cancel:
     OptionColor(prevOption).Value = True
 End Sub
 
+Private Sub TextInput_Click()
+  TextOutput.text = TextInput.text
+  StatusBar.Panels(1).text = "制造本程序：Crazy Urus"
+End Sub
+
 Private Sub TextInput_Change()
-    TextOutput.text = TextInput.text
-    StatusBar.Panels(1).text = "制造本程序：Crazy Urus"
+    TextInput_Click
+    TextInput.AddItem TextInput.text
 End Sub
 
 Private Sub TextFontSize_Change()
