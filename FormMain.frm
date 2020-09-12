@@ -76,7 +76,7 @@ Begin VB.Form FormMain
             Style           =   6
             Object.Width           =   2734
             MinWidth        =   2734
-            TextSave        =   "2020/9/12"
+            TextSave        =   "2020/9/13"
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -84,7 +84,7 @@ Begin VB.Form FormMain
             Style           =   5
             Object.Width           =   1147
             MinWidth        =   1147
-            TextSave        =   "23:57"
+            TextSave        =   "0:31"
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -553,6 +553,11 @@ Private Sub Form_Load()
     Dim i As Integer
     Dim fontName As String
     Dim fontNameFirstAscii As Integer
+    
+    If App.PrevInstance Then
+        MsgBox "当前程序已经在运行", vbCritical
+        End
+    End If
     
     For i = 0 To Screen.FontCount - 1
         fontName = Screen.Fonts(i)
