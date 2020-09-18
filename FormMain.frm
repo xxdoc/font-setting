@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form FormMain 
    BorderStyle     =   1  'Fixed Single
@@ -23,6 +23,14 @@ Begin VB.Form FormMain
    ScaleHeight     =   5040
    ScaleWidth      =   9030
    StartUpPosition =   2  '屏幕中心
+   Begin VB.ComboBox TextInput 
+      Height          =   375
+      Left            =   240
+      TabIndex        =   0
+      Text            =   "Crazy Urus 追求卓越软件"
+      Top             =   360
+      Width           =   7335
+   End
    Begin VB.CommandButton ButtonChange 
       Caption         =   "换一句"
       Default         =   -1  'True
@@ -74,14 +82,14 @@ Begin VB.Form FormMain
             Style           =   6
             Object.Width           =   2734
             MinWidth        =   2734
-            TextSave        =   "2020/3/9 星期一"
+            TextSave        =   "2020/9/13"
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   5
             Object.Width           =   1147
             MinWidth        =   1147
-            TextSave        =   "1:26"
+            TextSave        =   "0:50"
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -447,23 +455,6 @@ Begin VB.Form FormMain
          Width           =   540
       End
    End
-   Begin VB.TextBox TextInput 
-      BeginProperty Font 
-         Name            =   "微软雅黑"
-         Size            =   9
-         Charset         =   134
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   375
-      Left            =   240
-      TabIndex        =   0
-      Text            =   "Crazy Urus 追求卓越软件"
-      Top             =   360
-      Width           =   7335
-   End
    Begin VB.Label Label3 
       Caption         =   "请输入要显示的汉字："
       BeginProperty Font 
@@ -502,14 +493,21 @@ Function SetText(ByVal text As String)
 End Function
 
 Private Sub ButtonChange_Click()
-    Dim XMLHTTP As Object
+    Dim XMLHTTP As Object, Result As Object
     ButtonChange.Enabled = False
      
     Set XMLHTTP = CreateObject("MSXML2.ServerXMLHTTP")
-    XMLHTTP.Open "GET", "https://v1.hitokoto.cn/?c=i&encode=text", False
+    XMLHTTP.Open "GET", "https://v1.hitokoto.cn/?c=i&encode=json", False
     XMLHTTP.Send
     If XMLHTTP.Status = 200 And XMLHTTP.readyState = 4 Then
-        SetText XMLHTTP.responseText
+        Set Result = JSONParse(XMLHTTP.responseText)
+        SetText Result.hitokoto
+         
+        If IsNull(Result.from_who) Or Result.from_who = "佚名" Then
+            StatusBar.Panels(1).text = "出自：" & Result.from_title
+        Else
+            StatusBar.Panels(1).text = "出自：【" & Result.from_who & "】" & Result.from_title
+        End If
     Else
         MsgBox "获取内容失败，错误码：" & XMLHTTP.Status, vbExclamation
     End If
@@ -542,6 +540,11 @@ Private Sub Form_Load()
     Dim i As Integer
     Dim fontName As String
     Dim fontNameFirstAscii As Integer
+    
+    If App.PrevInstance Then
+        MsgBox "当前程序已经在运行", vbCritical
+        End
+    End If
     
     For i = 0 To Screen.FontCount - 1
         fontName = Screen.Fonts(i)
@@ -587,8 +590,14 @@ Cancel:
     OptionColor(prevOption).Value = True
 End Sub
 
+Private Sub TextInput_Click()
+  TextOutput.text = TextInput.text
+  StatusBar.Panels(1).text = "制造本程序：Crazy Urus"
+End Sub
+
 Private Sub TextInput_Change()
-    TextOutput.text = TextInput.text
+    TextInput_Click
+    TextInput.AddItem TextInput.text
 End Sub
 
 Private Sub TextFontSize_Change()
